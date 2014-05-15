@@ -24,8 +24,8 @@
 #define	Key2Up 3621003665
 #define	Key3Press 3039286897
 #define	Key3Up 3621003665
-#define	Key3Press 2605744107
-#define	Key3Up 3621003665
+#define	Key4Press 2605744107
+#define	Key4Up 3621003665
 
 void Motorctl::Motorctl_Inital(){
   pinMode(3,OUTPUT);  //back/forward control
