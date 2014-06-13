@@ -8,27 +8,43 @@
 #include "Arduino.h"
 // include this library's description file
 #include "sonar.h"
-// define obstacle style(4)
-#define Keep_going 1 //NO!Forward_obstacle
-#define Right_turn 2 //Forward_Left_obstacle
-#define Left_turn 3 //Forward_Right_obstacle
-#define Back 4 //FLR_obstacle
+// define basic obstacle style(6)
+#define nothing 0
+#define F 1         		//near the forward obstacle
+#define L 2         		//near the left obstacle
+#define R 3         		//near the right obstacle
+#define FL 12               
+#define FR 13               
+#define RL 23
+#define FLR 123
+
 // 
-#define Forward_TrigPin 31 //前面
-#define Forward_EchoPin 33 
-#define Left_TrigPin 35 //左邊
-#define Left_EchoPin 37 
-#define Right_TrigPin 39 //右邊
-#define Right_EchoPin 41 
+#define Forward_TrigPin 35  	//TrigPin of forward sonar
+#define Forward_EchoPin 37  	//EchoPin
+#define Left_TrigPin 31     	//TrigPin of left sonar
+#define Left_EchoPin 33     	//EchoPin 
+#define Right_TrigPin 39    	//TrigPin of right sonar
+#define Right_EchoPin 41    	//EchoPin
 
 
 
 /*
-  Start setting sonar with 
-  Inital function and set function for changing closing distance for warning
+  "BASIC" SETTING FOR USERs: 
+  Start sonar with 
+  <1> Inital function of sonar(including F, L, R)    @ Sonar_Inital(void) @
+  <2> Set closing distance for warning               @ Set_Near(double)   @
+  													 @ Set_Danger(double) @
+  <3> Set delay some time to receive ECHO signal     @ Set_DelayTime(int) @
+  
+  "ADVANCE" SETTING FOR USERs: 
+  Deaign policy by youself, you may need
+  <1> Set
 */
 void sonar::Sonar_Inital()
 {
+	delaytime = 800;
+	near = 25;
+	danger = 20;
 	pinMode(Forward_TrigPin, OUTPUT); //前面
 	pinMode(Forward_EchoPin, INPUT); 
 	pinMode(Left_TrigPin, OUTPUT); //左邊
@@ -38,16 +54,44 @@ void sonar::Sonar_Inital()
 }
 
 
-void sonar::Set_Sonar(double x)
-{
-	warning = x;
-}
+void sonar::Set_Near(double nd)
+{	near = nd;	}
 
+void sonar::Set_Danger(double dd)
+{	danger = dd;	}
+
+void sonar::Set_DelayTime(int t)
+{	delaytime = t;	}
+
+/*
+  Distinguish whether or not visit obstacle(separate each Forward, Left, Right)
+*/
+int sonar::PureDetect()
+{
+	while(1)
+	{
+		StartTrig_Forward(true);
+		d1 = ReadEcho_Forward();
+		StartTrig_Left(true);
+		d2 = ReadEcho_Left();
+		StartTrig_Right(true);
+		d3 = ReadEcho_Right();
+		
+		if( d1 > near && d2 > near && d3 > near) return nothing;
+		if( d1 <= near && d2 > near && d3 > near) return F;
+		if( d1 > near && d2 <= near && d3 > near) return L;
+		if( d1 > near && d2 > near && d3 <= near) return R;
+	    if( d1 <= near && d2 <= near && d3 > near) return FL;
+		if( d1 <= near && d2 > near && d3 <= near) return FR;
+		if( d1 > near && d2 <= near && d3 <= near) return RL;
+		if( d1 <= near && d2 <= near && d3 <= near) return FLR;
+
+	}//the end of while Loop
+}
 /*
   Open sonar(separate each Forward, Left, Right)
 */
-  
-void sonar::Open_Forward_Sonar(bool b)
+void sonar::StartTrig_Forward(bool b)
 {
 	if(b == true)
 	{
@@ -56,6 +100,7 @@ void sonar::Open_Forward_Sonar(bool b)
 		digitalWrite(Forward_TrigPin, HIGH); 
 		delayMicroseconds(10); 
 		digitalWrite(Forward_TrigPin, LOW);
+		//delay(delaytime); //延遲讀取echo訊號的時間
 	}
 	else
 	{
@@ -67,7 +112,7 @@ void sonar::Open_Forward_Sonar(bool b)
 	}
 }
 
-void sonar::Open_Left_Sonar(bool b)
+void sonar::StartTrig_Left(bool b)
 {
 	if(b == true)
 	{
@@ -76,6 +121,7 @@ void sonar::Open_Left_Sonar(bool b)
 		digitalWrite(Left_TrigPin, HIGH); 
 		delayMicroseconds(10); 
 		digitalWrite(Left_TrigPin, LOW); 
+		//delay(delaytime);
 	}
 	else
 	{
@@ -87,7 +133,7 @@ void sonar::Open_Left_Sonar(bool b)
 	}
 }
 
-void sonar::Open_Right_Sonar(bool b)
+void sonar::StartTrig_Right(bool b)
 {
 	if(b == true)
 	{
@@ -96,6 +142,7 @@ void sonar::Open_Right_Sonar(bool b)
 		digitalWrite(Right_TrigPin, HIGH); 
 		delayMicroseconds(10); 
 		digitalWrite(Right_TrigPin, LOW);
+		//delay(delaytime);
 	}
 	else
 	{
@@ -111,73 +158,25 @@ void sonar::Open_Right_Sonar(bool b)
 /*
   Read sonar(separate each Forward, Left, Right)
 */
-  
-double sonar::Read_Forward()
+double sonar::ReadEcho_Forward()
 {
 	cm_F = pulseIn(Forward_EchoPin, HIGH) / 58.0; //將回波時間換算成cm 
 	cm_F = (int(cm_F * 100.0)) / 100.0; //保留兩位小數 
 	return cm_F;
 }
 
-double sonar::Read_Left()
+double sonar::ReadEcho_Left()
 {
 	cm_L = pulseIn(Left_EchoPin, HIGH) / 58.0; //將回波時間換算成cm 
 	cm_L = (int(cm_L * 100.0)) / 100.0; //保留兩位小數 
 	return cm_L;
 }
 
-double sonar::Read_Right()
+double sonar::ReadEcho_Right()
 {
 	cm_R = pulseIn(Right_EchoPin, HIGH) / 58.0; //將回波時間換算成cm 
 	cm_R = (int(cm_R * 100.0)) / 100.0; //保留兩位小數 
 	return cm_R;
 }
 
-/*
-  Distinguish whether or not visit obstacle(separate each Forward, Left, Right)
-*/
-  
-int sonar::Sonar()
-{
-	while(1)
-	{
-		//still opening Forward sonar, Forward-non-stop!
-		Open_Forward_Sonar(true);
-		//Distinguish
-		if( Read_Forward() <= warning)
-		{
-			Open_Left_Sonar(true);
-			Open_Right_Sonar(true); 
 
-			if(Read_Left() <= warning)
-			{
-				Open_Left_Sonar(false);
-				Open_Right_Sonar(false);
-				return Right_turn;
-			}
-			else if(Read_Right() <= warning)
-			{
-				Open_Left_Sonar(false);
-				Open_Right_Sonar(false);
-				return Left_turn;
-			}
-			else if(Read_Left() <= warning && Read_Right() <= warning)
-			{
-				Open_Left_Sonar(false);
-				Open_Right_Sonar(false);
-				return Back;
-			}
-			else
-			{	
-				Open_Left_Sonar(false);
-				Open_Right_Sonar(false);
-				//一律右轉
-				return Right_turn;
-			}
-		}
-		else
-		{
-			return Keep_going;
-		}
-	}//the end of while Loop
-}

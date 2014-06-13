@@ -7,25 +7,17 @@
   Reference Code:
 */
 // ensure this library description is only included once
-	#ifndef Motorctl_h
-	#define Motorctl_h
+	#ifndef Policy_h
+	#define Policy_h
 // include types & constants of Wiring core API
 #include "Arduino.h"
 // library interface description
-class Motorctl
+class Policy
 {
   // user-accessible "public" interface
   public:
-  void Motorctl_Inital();
-	void Forward_move();
-	void Backward_move();
-	void Left_move();
-	void Right_move();
-	void Stop_move();
-  void Left_forward_move();
-  void Right_forward_move();
-	void SwitchAction(unsigned long);
-  void Timer_update();
+  void Policy_Inital();
+	int Action();
 };
 
 #endif

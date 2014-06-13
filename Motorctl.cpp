@@ -8,6 +8,7 @@
 #include "Arduino.h"
 // include this library's description file
 #include "Motorctl.h"
+#include "Timer.h"
 //rc-100A Channel 1 code def
 #define	UKeyPress 1004609626
 #define	UKeyUp 3621003665
@@ -26,6 +27,8 @@
 #define	Key3Up 3621003665
 #define	Key4Press 2605744107
 #define	Key4Up 3621003665
+
+Timer ctl_timer;
 
 void Motorctl::Motorctl_Inital(){
   pinMode(3,OUTPUT);  //back/forward control
@@ -56,6 +59,18 @@ void Motorctl::Stop_move(){
 	digitalWrite(5,LOW);
 	digitalWrite(6,LOW);
 }
+void Motorctl::Left_forward_move(){
+	//digitalWrite(3,HIGH);
+	//digitalWrite(4,LOW);        
+	digitalWrite(6,LOW);        
+    ctl_timer.pulse(9, 2000, LOW);    
+}
+void Motorctl::Right_forward_move(){
+	//digitalWrite(3,HIGH);
+	//digitalWrite(4,LOW);        
+	digitalWrite(5,LOW);        
+    ctl_timer.pulse(9, 2000, LOW);    
+}
 void Motorctl::SwitchAction(unsigned long IRnumber){
 	switch(IRnumber){
 		case UKeyPress:
@@ -65,13 +80,20 @@ void Motorctl::SwitchAction(unsigned long IRnumber){
 			Backward_move();
 			break;
 		case LKeyPress:
-			Left_move();
+			Left_forward_move();
 			break;
 		case RKeyPress:
-			Right_move();
+			Right_forward_move();
 			break;
 		case Key1Press:
 			Stop_move();
 			break;
+		case Key4Press:
+			
+			break;
 	}
+}
+
+void Motorctl::Timer_update(){
+	ctl_timer.update();
 }
