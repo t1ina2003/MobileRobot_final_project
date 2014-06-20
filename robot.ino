@@ -1,45 +1,47 @@
 #include "IRremote.h" 
 #include "Motorctl.h"
+#include "Sonar.h"
+#include "Policy.h"
+
+#include <LiquidCrystal.h>
 
 const int irReceiverPin = 2;          
-IRrecv irrecv(irReceiverPin);            
+IRrecv irrecv(irReceiverPin);
 decode_results results;
-unsigned long  time_pass;
-int pressure_signal;
-int pressure;
+int action;
+int v_sonar;
+sonar sonar1;
+Policy policy1;
 Motorctl robot1;
+
+LiquidCrystal lcd(32, 30, 28, 26, 24, 22);
+
 
 void setup()
 {
-	Serial.begin(9600);                     // Open Serial port, Baud rate is 9600 
-	irrecv.enableIRIn();                   // Open Infrared 
+	Serial.begin(9600);                     // 開啟 Serial port, 通訊速率為 9600 
+	lcd.begin(16, 2);
+	irrecv.enableIRIn();                   // 啟動紅外線解碼
+	sonar1.Sonar_Inital();
+	sonar1.Set_Distance(15,25);
 	robot1.Motorctl_Inital();
 	robot1.Stop_move();
-	pinMode(8,OUTPUT); //LED
 }
 
-void loop() 
+void loop()
 {
-	if (irrecv.decode(&results)) {
-		robot1.SwitchAction(results.value);
-		Serial.print("irCode: ");            
-		Serial.print(results.value, DEC);    // Infrared code 
-		Serial.print(",  bits: ");           
-		Serial.println(results.bits);        // amount of Infrared bit 
-		irrecv.resume();                    // receive next IR signal     
-	}
-	pressure_signal = analogRead(A0);
-	pressure = map(pressure_signal, 0, 1023, 1, 50); 
-	
-	//time_pass = millis();
+	v_sonar = sonar1.FUZZYDetect();
+	action = policy1.Action(v_sonar);
+	robot1.SwitchAction(1);
 
-	if((millis() %3000) == 0){
-		Serial.println(pressure);
-	}
-	if(pressure>19){
-		digitalWrite(8,HIGH);
-	}else{
-		digitalWrite(8,LOW);
-	}
+	lcd.setCursor(0, 0);
+	lcd.print("Sensor:");
+	lcd.print(v_sonar);
+	lcd.print("  ");
+	lcd.setCursor(0, 1);
+	lcd.print("pre:");
+	lcd.print(robot1.Pressure_Boolean());
+	lcd.print("  ");
+	delay(300);
 }
 
