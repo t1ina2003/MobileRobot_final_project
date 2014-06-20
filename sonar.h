@@ -1,5 +1,4 @@
 /*
-
   Created to Arduino Motor control, the release of the IRIS from IRSILAB
   Only Use in robot 
   Created by Zuo Syuan Wang, April 18, 2014.
@@ -15,20 +14,30 @@
 // library interface description
 class sonar
 {
-  int delaytime;
   double cm_F,cm_L,cm_R;
   double d1,d2,d3;
+  int t1,t2,t3;
   double near;//initial setting is 25cm(by my calulate)
-  double danger;//initial setting is 20cm
+  double far;//initial setting is 30cm
+
 
 
   // user-accessible "public" interface
   public:
 
     void Sonar_Inital(); //set TrigPin, EchoPin, nearDistance, toocloseDistance
-    void Set_Near(double); //distance when robot near obstacle
-    void Set_Danger(double); //distance when robot to close to obstacle
-    void Set_DelayTime(int); //delay some time to receive ECHO signal
+    void Set_Distance(double,double); //distance when robot near obstacle
+
+    double Get_cmF();
+    double Get_cmL();
+    double Get_cmR();
+    double Get_near();
+    double Get_far();
+    void OpenandGet_Forward();
+    void OpenandGet_Left();
+    void OpenandGet_Right();
+    int fuzzifiter(double);
+    int Rules(int,int,int);
 
     void StartTrig_Forward(bool);
     void StartTrig_Left(bool);
@@ -37,7 +46,9 @@ class sonar
     double ReadEcho_Left();
     double ReadEcho_Right();
 
-    int PureDetect();
+    int PureDetect();  //基本避障偵測
+    int TwoDetect();
+    int FUZZYDetect();
 };
 
 #endif
