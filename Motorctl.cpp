@@ -8,7 +8,7 @@
 #include "Arduino.h"
 // include this library's description file
 #include "Motorctl.h"
-#include "Timer.h"
+
 
 
 #define Forward_move 1
@@ -31,13 +31,14 @@
 
 */
 
-Timer ctl_timer;
+
 
 void Motorctl::Motorctl_Inital(){
 	pinMode(3,OUTPUT);  //back/forward control
   	pinMode(4,OUTPUT);  //back/forward control
   	pinMode(5,OUTPUT);  //left/right control
   	pinMode(6,OUTPUT);  //left/right control
+  	pinMode(Photointerrup,INPUT);
   	turn_count = 0;
 }
 
@@ -54,22 +55,28 @@ void Motorctl::B_move(){
 	digitalWrite(6,LOW);
 }
 void Motorctl::L_move(){
-	if(Pressure_Boolean() == 1){
-		delay(750);
+	if(Photo_Boolean() == 1){
+		//delay(750);
 		digitalWrite(3,LOW);
 		digitalWrite(4,LOW);
 		digitalWrite(5,HIGH);
 		digitalWrite(6,LOW);
+	}else{
+		// digitalWrite(3,HIGH);
+		// digitalWrite(4,LOW);
 	}
 
 }
 void Motorctl::R_move(){
-	if(Pressure_Boolean() == 1){
-		delay(750);
+	if(Photo_Boolean() == 1){
+		//delay(750);
 		digitalWrite(3,LOW);
 		digitalWrite(4,LOW);
 		digitalWrite(5,LOW);
 		digitalWrite(6,HIGH);
+	}else{
+		// digitalWrite(3,HIGH);
+		// digitalWrite(4,LOW);
 	}
 }
 
@@ -159,4 +166,8 @@ void Motorctl::SwitchAction(int action_receive){
 			Stop_move();
 			break;
 	}
+}
+
+int Motorctl::Photo_Boolean(){
+	return digitalRead(Photointerrup);
 }

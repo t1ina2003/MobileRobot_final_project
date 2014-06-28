@@ -90,8 +90,8 @@
 */
 void sonar::Sonar_Inital()
 {
-	// near = 10;
-	// far = 15;
+	near = 10;
+	far = 15;
 	pinMode(Forward_TrigPin, OUTPUT); //前面
 	pinMode(Forward_EchoPin, INPUT); 
 	pinMode(Left_TrigPin, OUTPUT);    //左邊

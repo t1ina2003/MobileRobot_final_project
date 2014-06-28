@@ -32,6 +32,7 @@
 #define Key4Up 3621003665
 
 #define pressure_pin A0
+#define Photointerrup 52
 
 // library interface description
 class Motorctl
@@ -56,6 +57,7 @@ class Motorctl
 	void Stop_move();
 	void SwitchAction(int );
   int Pressure_Boolean();   //intelligence pressure threshold adjust.
+  int Photo_Boolean();  
 };
 
 #endif

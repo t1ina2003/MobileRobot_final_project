@@ -17,7 +17,7 @@ class Policy
   // user-accessible "public" interface
   public:
   void Policy_Inital();
-	int Action(int sonar);
+	int Action(int sonar,int irint10,int irint9,int irint8);
 };
 
 #endif

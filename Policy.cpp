@@ -51,88 +51,136 @@ void Policy::Policy_Inital(){
 
 }
 
-int  Policy::Action(int v_sonar){
+int  Policy::Action(int v_sonar,int irint10,int irint9,int irint8){
 	switch(v_sonar){
-		case nothing:
-				return 1; //1
+		case nothing://1
+		 		if( irint10 == 1 && irint9 == 1 && irint8 == 1) return 1;
+				if(irint10 == 1 && irint9 == 1 ) return 8;
+				if(irint9 == 1 && irint8 == 1) return 2;
+				if(irint10 == 1 && irint8 == 1) return 3;
+				if(irint10 == 1) return 7;
+				if(irint9 == 1) return 1;
+				if(irint8 == 1) return 3;
+				return 1;
 				break;
-		case nearF:
-				return 3; //2
+		case nearF://2
+				if(irint8 == 1 && irint9 == 1) return 3;
+				return 7; 
 				break;
-		case nearL:
-				return 8; //3
+		case nearL://3
+				if(irint9 == 1) return 1;
+				return 8; 
 				break;
-		case nearR:
-				return 2; //4
+		case nearR://4
+				if(irint8 == 1) return 1;
+				return 2; 
 				break;
-		case farF:
-				return 2; //5
+		case farF://5
+				//if(irint10 == 1 && irint9 == 1 ) return 8;
+				if(irint9 == 1 && irint8 == 1) return 2;
+				return 8; 
 				break;
-		case farL:
-				return 1; //6
+		case farL: //6
+				//if(irint10 == 1 && irint9 == 1 ) return 8;
+				if(irint9 == 1) return 1;
+				//if(irint10 == 1) return 7;
+				if(irint9 == 1 && irint8 == 1) return 2;
+				return 1;
 				break;
-		case farR:
-				return 1; //7
+		case farR: //7
+				if(irint9 == 1 && irint8 == 1) return 2;
+				if(irint9 == 1) return 1;
+				if(irint8 == 1) return 3;
+				//if(irint10 == 1 && irint9 == 1 ) return 8;
+				return 1;
 				break;
-		case nFnL:
-				return 7; //8
+		case nFnL://8
+				return 7; 
 				break;
-		case nFfL:
-				return 7; //9
+		case nFfL://9
+				return 7; 
 				break;
-		case fFnL:
-				return 8; //10
+		case fFnL://10
+				if(irint9 == 1 && irint8 == 1) return 2;
+				return 8; 
 				break;
-		case fFfL:
-				return 8; //11
+		case fFfL://11
+				if(irint9 == 1) return 1;
+				return 8; 
 				break;
-		case nFnR:
-				return 3; //12
+		case nFnR://12
+				return 3; 
 				break;
-		case nFfR:
-				return 3; //13
+		case nFfR://13
+				return 3; 
 				break;
-		case fFnR:
-				return 2; //14
+		case fFnR://14
+				if(irint8 == 1) return 3;
+				return 2;
 				break;	
-		case fFfR:
-				return 2; //15
+		case fFfR://15
+				if(irint8 == 1) return 3;
+				return 2;
 				break;
-		case nLnR:
-				return 4; //16
+		case nLnR://16
+				if(irint9 == 1 && irint8 == 1) return 1;
+				if(irint8 == 1) return 2;
+				return 2; 
 				break;
-		case nLfR:
-				return 8; //17
+		case nLfR://17
+				if(irint8 == 1) return 1;
+				return 8; 
 				break;
-		case fLnR:
-				return 2; //18
+		case fLnR://18
+				if(irint9 == 1) return 1;
+				return 2;
 				break;
-		case fLfR:
-				return 1; //19
+		case fLfR://19
+				//if(irint10 == 1 && irint9 == 1 && irint8 == 1) return 1;
+				//if(irint10 == 1 && irint9 == 1 ) return 8;
+				if(irint9 == 1 && irint8 == 1) return 2;
+				//if(irint10 == 1 && irint8 == 1) return 3;
+				//if(irint10 == 1) return 8;
+				if(irint9 == 1) return 1;
+				if(irint8 == 1) return 2;
+				return 1; 
 				break;
-		case nFnLnR:
-				return 4; //20
+		case nFnLnR://20
+				if(irint8 == 1) return 6;
+				return 4; 
 				break;
-		case nFnLfR: 
-				return 7; //21
+		case nFnLfR://21
+				return 7;
 				break;
-		case nFfLnR:
-				return 3; //22 
+		case nFfLnR://22 
+				return 3; 
 				break;
-		case nFfLfR:
-				return 3; //23
+		case nFfLfR://23
+				if(irint8 == 1) return 3;
+				return 7; 
 				break;
-		case fFnLnR:
-				return 1; //24
+		case fFnLnR://24
+				if(irint9 == 1) return 1;
+				if(irint8 == 1) return 2;
+				return 1;
 				break;
-		case fFnLfR:
-				return 8; //25 
+		case fFnLfR://25 
+				if(irint8 == 1) return 1;
+				return 8; 
 				break;
-		case fFfLnR:
-				return 2; //26 
+		case fFfLnR://26
+				if(irint9 == 1) return 1;
+				return 2;  
 				break;
-		case fFfLfR:
-				return 1; //27
+		case fFfLfR://27
+				//if(irint10 == 1 && irint9 == 1 && irint8 == 1) return 1;
+				//if(irint10 == 1 && irint9 == 1 ) return 8;
+				if(irint9 == 1 && irint8 == 1) return 2;
+				//if(irint10 == 1 && irint8 == 1) return 3;
+				//if(irint10 == 1) return 7;
+				if(irint9 == 1) return 1;
+				if(irint8 == 1) return 3;
+				return 1; 
 				break; 
 		
 					}
